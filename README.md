@@ -315,5 +315,82 @@ Sun Mon Tue Wed Thu Fri Sat
     - 달력 위젯
     - 리스트 UI
 
-### 다음시간에..    
-    
+## DAY 5
+### TO-DO
+- try-catch 적용 (지금)
+- 정렬 고도화 (날짜 + 타입 + 우선순위)
+- 날짜별 출력 개선 (형식 맞추기)
+- 달력 UI (ASCII)
+- 구조 전환(Menu -> Calendar UI)
+
+#### try-catch
+- 입력 안정성 처리 (try-catch)
+    - 사용자 입력을 문자열로 받은 뒤 숫자로 변환할 때 std::stoi() 사용
+    - 잘못된 입력(문자 입력 등)이 들어오면 프로그램이 종료되는 문제 발생
+    - 이를 방지하기 위해 try-catch로 예외 처리
+
+```C++
+std::string input;
+std::getline(std::cin, input);
+
+try {
+    int num = std::stoi(input);
+} catch (...) {
+    std::cout << "숫자를 입력해주세요." << std::endl;
+    return;
+}
+```
+- try: 오류가 발생할 수 있는 코드 실행
+- catch: 오류 발생 시 실행되는 코드
+- 프로그램이 꺼지지 않고 계속 동작하도록 안정성 확보    
+
+#### 구조 전환 (Menu → Calendar UI)
+- 기존: 메뉴 기반 CLI 구조
+- 변경: 달력 중심 UI 구조로 전환
+
+- 변경 이유
+    - 기능 중심 구조 → 사용자 경험 중심 구조로 개선
+    - 실제 앱처럼 “화면 하나에서 모든 기능 제어” 구현
+
+- 변경 사항
+1. main 역할 축소
+    - 기존: 메뉴 출력 + 기능 제어
+    - 변경: showCalendar()만 실행하도록 단순화
+```C++
+while (true) {
+    system("cls");
+    manager.showCalendar();
+}
+```
+
+2. showCalendar() 중심 구조 도입
+    - 모든 기능을 하나의 UI에서 처리
+    - 사용자 입력 → 함수 호출 구조
+```C++
+[A] 추가  [E] 수정  [D] 삭제  [C] 완료
+```
+
+3. 상태 개념 도입 (selectedDate)
+    - 기존: 매번 날짜 입력
+    - 변경: 선택된 날짜 유지
+```C++
+std::string selectedDate;
+```
+
+4. 함수 역할 분리
+    - 입력 받는 함수 vs 출력 전용 함수 분리
+```C++
+showTasksByDate()           // 사용자 입력 포함
+showTasksByDateInternal()   // 출력 전용
+```
+
+#### 고정
+```C++
+main
+ └── showCalendar()  ← 메인 화면 (절대 고정)
+       ├── 달력 출력
+       ├── 선택 날짜
+       ├── 일정 출력
+       └── 입력 처리 (A/E/D/C/S)
+```
+
